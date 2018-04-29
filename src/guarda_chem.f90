@@ -137,10 +137,6 @@ implicit none
 !   Terminan definiciones
     call check( nf90_enddef(ncid) )
 !    Inicia loop de tiempo
-    print *,ENMX
-    print *,ename
-    print *,EMOZ
-
     tiempo: do it=iit,eit
       itnc=it
      if(PERIODO.eq.2) itnc=it+12
@@ -161,21 +157,31 @@ implicit none
         call check( nf90_put_var(ncid, id_varlong,xlon,start=(/1,1,it+1/)) )
         call check( nf90_put_var(ncid, id_varlat,xlat,start=(/1,1,it+1/)) )
         end if   ! for kk == 1
-        lon: do i=1, dim(3)
-          lat:do j=1, dim(4)
-            lev:do l=1,dim(6)
-              do imx=1,SIZE(EMI_MEX,DIM=5)
-                if(ENMX(imx).eq.EMOZ(ikk)) ea(i,j,l,1)=EMI_MEX(i,j,l,it+1,imx)
-              end do
-              do ius=1,SIZE(EMI_USA,DIM=5)
-                if(ename(ius).eq.EMOZ(ikk).and.ea(i,j,l,1).eq.0 .and.j.gt.93) then
-                    ea(i,j,l,1)=EMI_USA(i,j,l,it+1,ius)+ea(i,j,l,1)
-                  exit
-                end if
-              end do
-            end do lev
-          end do lat
-        end do lon
+        mex:do imx=1,SIZE(EMI_MEX,DIM=5)
+          if(ENMX(imx).eq.EMOZ(ikk)) then
+          lon: do i=1, dim(3)
+            lat:do j=1, dim(4)
+              lev:do l=1,dim(6)
+                    ea(i,j,l,1)=EMI_MEX(i,j,l,it+1,imx)
+              end do lev
+            end do lat
+          end do lon
+          end if
+        end do mex
+!
+        us: do ius=1,SIZE(EMI_USA,DIM=5)
+          if(ename(ius).eq.EMOZ(ikk)) then
+            lonu: do i=1, dim(3)
+              latu:do j=1, dim(4)
+                levu:do l=1,dim(6)
+                 if(ea(i,j,l,1).eq.0 .and.j.gt.93) &
+                  ea(i,j,l,1)=EMI_USA(i,j,l,it+1,ius)+ea(i,j,l,1)
+                end do levu
+              end do latu
+            end do lonu
+            exit
+          end if
+        end do us
       !if(periodo.eq.1) then
         call check( nf90_put_var(ncid, id_var(ikk),ea,start=(/1,1,1,it+1/)) )
       !else

@@ -93,9 +93,9 @@ default:
 		"LN		= $(LN)" 	"MACH		= DEC"		\
 		"MAKE		= $(MAKE)"	"CPP		= /lib/cpp"	\
 		"CPPFLAGS	= -I. -C -traditional"	\
-		"FC		= ifort"	"FCFLAGS	= -D$(MACH) -I. -convert big_endian -pc32 -FR -tpp7 -xW"\
-		"LDOPTIONS	= -convert big_endian -pc32 -tpp7 -xW"	"CFLAGS		= -I."		\
-		"LOCAL_LIBRARIES= " ) ; \
+		"FC		= ifort -FR"	"FCFLAGS	= -I$(NETCDF)/include -I. -convert big_endian "\
+		"LDOPTIONS	= -convert big_endian -L$(NETCDF)/lib -lnetcdff"	"CFLAGS		= -I."		\
+		"LOCAL_LIBRARIES= -lnetcdff" ) ; \
 	else \
 		grep Darwin .tmpfile ; \
 	if [ $$? = 0 ]; then echo "Compiling for Darwin" ;		\
