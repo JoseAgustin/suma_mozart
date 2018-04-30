@@ -31,7 +31,7 @@ SRC	=	$(OBJS:.o=.f)
 
 
 cray dec hp ibm sgi sun default:
-		@echo "you need to be up a directory to make interpola.exe"
+		@echo "you need to be up a directory to make convert.exe"
 
 all:: 		suma_chem.exe 
 

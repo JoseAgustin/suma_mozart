@@ -175,7 +175,7 @@ implicit none
               latu:do j=1, dim(4)
                 levu:do l=1,dim(6)
                  if(ea(i,j,l,1).eq.0 .and.j.gt.93) &
-                  ea(i,j,l,1)=EMI_USA(i,j,l,it+1,ius)+ea(i,j,l,1)
+                  ea(i,j,l,1)=EMI_USA(i,j,l,it+1,ius)
                 end do levu
               end do latu
             end do lonu
