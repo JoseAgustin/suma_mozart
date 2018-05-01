@@ -77,28 +77,25 @@ USE netcdf
   end if
 end subroutine check
 
-Pure Function to_upper(str) Result (string)
+pure function a_mayuscula(palabra) result (cadena)
+!   ++++++++++++++++++++++++++++++
+!       Cambia a mayusculas
+!   ++++++++++++++++++++++++++++++
+implicit none
+Character(*), Intent(In) :: palabra
+Character(LEN(palabra))  :: cadena
 
-!   ==============================
-!   Changes a string to upper case
-!   ==============================
+Integer :: j, im
 
-Implicit None
-Character(*), Intent(In) :: str
-Character(LEN(str))      :: string
+Character(26), Parameter :: minus = 'aeioubcdfghjklmnpqrstvwxyz'
+Character(26), Parameter :: may   = 'AEIOUBCDFGHJKLMNPQRSTVWXYZ'
 
-Integer :: ic, i
-
-Character(26), Parameter :: cap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-Character(26), Parameter :: low = 'abcdefghijklmnopqrstuvwxyz'
-
-!   Capitalize each letter if it is lowecase
-string = str
-do i = 1, LEN_TRIM(str)
-ic = INDEX(low, str(i:i))
-if (ic > 0) string(i:i) = cap(ic:ic)
-end do
-
-End Function to_upper
+!   Cambia cada letra a mayuscula si es minuscula
+  cadena = palabra
+  do j = 1, len_trim(palabra)
+    im = index(minus, palabra(j:j))
+    if (im > 0) cadena(j:j) = may(im:im)
+  end do
+end function a_mayuscula
 
 end module var_suma

@@ -120,10 +120,10 @@ implicit none
     if(name(2:2).eq."_") then
        j=j+1
     if(country.eq."USA" ) then
-      ename(j) = trim(to_upper(name))
+      ename(j) = trim(a_mayuscula(name))
     !print *,j,i,ename(j)
     else
-      ENMX(j)= trim(to_upper(name))
+      ENMX(j)= trim(a_mayuscula(name))
       !print *,j,i,ENMX(j)
     end if
       id_var(j) = i

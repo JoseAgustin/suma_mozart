@@ -1,3 +1,4 @@
+!****************************************************************************
 !
 !   guarda_chem.f90
 !
@@ -34,7 +35,7 @@ implicit none
   character (len=22) :: FILE_NAME
   character(8)  :: date,cday
   character(10) :: time
-  character(19) :: hoy
+  character(19) :: hoy,unit
   print *,"Guarda Archivo"
   allocate(id_var(mozart+1))
   call date_and_time(date,time)
@@ -129,9 +130,11 @@ implicit none
       call check( nf90_put_att(ncid, id_varlat, "axis", "Y") )
     do i=1,mozart
       if(i.lt.34 ) then
-        call crea_attr(ncid,4,dimids4,EMOZ(i),cname(i),id_var(i))
+        unit="mol km^-2 hr^-1"
+        call crea_attr(ncid,4,dimids4,EMOZ(i),cname(i),unit,id_var(i))
       else
-        call crea_attr2(ncid,4,dimids4,EMOZ(i),cname(i),id_var(i))
+        unit="ug m-2 s-1"
+        call crea_attr(ncid,4,dimids4,EMOZ(i),cname(i),unit,id_var(i))
       end if
     end do
 !   Terminan definiciones
@@ -199,12 +202,12 @@ contains
 ! C     RRRR  EEEE  AAAAA    AAAAA   T     T   RRRR
 ! CC    R  R  E     A   A    A   A   T     T   R  R
 !  CCCC R   R EEEEE A   A____A   A   T     T   R   R
-subroutine crea_attr(ncid,idm,dimids,svar,cnamei,id_var)
+subroutine crea_attr(ncid,idm,dimids,svar,cnamei,unit,id_var)
 implicit none
 integer , INTENT(IN) ::ncid,idm
 integer, INTENT(out) :: id_var
 integer, INTENT(IN),dimension(idm):: dimids
-character(len=*), INTENT(IN)::svar,cnamei
+character(len=*), INTENT(IN)::svar,cnamei,unit
 character(len=50) :: cvar
 cvar=trim(cnamei)//" emission rate"
 
@@ -213,34 +216,11 @@ call check( nf90_def_var(ncid, svar, NF90_REAL, dimids,id_var ) )
 call check( nf90_put_att(ncid, id_var, "FieldType", 104 ) )
 call check( nf90_put_att(ncid, id_var, "MemoryOrder", "XYZ") )
 call check( nf90_put_att(ncid, id_var, "description", Cvar) )
-call check( nf90_put_att(ncid, id_var, "units", "mol km^-2 hr^-1"))
+call check( nf90_put_att(ncid, id_var, "units", unit))
 call check( nf90_put_att(ncid, id_var, "stagger", "Z") )
 call check( nf90_put_att(ncid, id_var, "coordinates", "XLONG XLAT") )
 ! print *,"Entro a Attributos de variable",dimids,id,jd
 return
 end subroutine crea_attr
-!  CCCC RRRR  EEEEE  AAA      AAA  TTTTT TTTTT RRRR   222
-! CC    R  RR E     A   A    A   A   T     T   R  RR 2   2
-! C     RRRR  EEEE  AAAAA    AAAAA   T     T   RRRR     2
-! CC    R  R  E     A   A    A   A   T     T   R  R   2
-!  CCCC R   R EEEEE A   A____A   A   T     T   R   R 22222
-subroutine crea_attr2(ncid,idm,dimids,svar,cnamei,id_var)
-implicit none
-integer, INTENT(IN) ::ncid,idm
-integer, INTENT(out) :: id_var
-integer,INTENT(IN) ,dimension(idm):: dimids
-character(len=*),INTENT(IN) ::svar,cnamei
-character(len=50) :: cvar
-cvar=trim(cnamei)//" emission rate"
-call check( nf90_def_var(ncid, svar, NF90_REAL, dimids,id_var ) )
-! Assign  attributes
-call check( nf90_put_att(ncid, id_var, "FieldType", 104 ) )
-call check( nf90_put_att(ncid, id_var, "MemoryOrder", "XYZ") )
-call check( nf90_put_att(ncid, id_var, "description",cvar) )
-call check( nf90_put_att(ncid, id_var, "units", "ug m-2 s-1"))
-call check( nf90_put_att(ncid, id_var, "stagger", "Z") )
-call check( nf90_put_att(ncid, id_var, "coordinates", "XLONG XLAT") )
-! print *,"Entro a Attributos de variable",dimids,id,jd
-return
-end subroutine crea_attr2
+
 end subroutine  guarda_emis
